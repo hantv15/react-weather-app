@@ -5,20 +5,28 @@ function App() {
   const [data, setData] = useState([]);
   // Tạo state set dữ liệu khi search location
   const [location, setLocation] = useState("Hà nội");
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=859b842dcdd2482527c201378c183952&lang=vi`;
+  // const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=859b842dcdd2482527c201378c183952&lang=vi`;
 
   useEffect(() => {
-    axios.get(url).then((response) => {
-      setData(response.data);
-    });
+    const getData = async () => {
+      const data = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=859b842dcdd2482527c201378c183952&lang=vi`
+      );
+      setData(data.data);
+    };
+    getData();
   }, []);
 
   // Tạo hàm xử lý khi nhập dữ liệu vào input sẽ call api lấy data
   const searchLocation = (event) => {
     if (event.key === "Enter") {
-      axios.get(url).then((response) => {
-        setData(response.data);
-      });
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=859b842dcdd2482527c201378c183952&lang=vi`
+        )
+        .then((response) => {
+          setData(response.data);
+        });
       setLocation("");
     }
   };
