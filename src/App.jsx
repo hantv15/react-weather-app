@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 function App() {
   // Tạo state chưa dữ liệu khi gọi đến api
   const [data, setData] = useState([]);
   // Tạo state set dữ liệu khi search location
-  const [location, setLocation] = useState("");
-
+  const [location, setLocation] = useState("Hà nội");
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=859b842dcdd2482527c201378c183952&lang=vi`;
+
+  useEffect(() => {
+    axios.get(url).then((response) => {
+      setData(response.data);
+    });
+  }, []);
 
   // Tạo hàm xử lý khi nhập dữ liệu vào input sẽ call api lấy data
   const searchLocation = (event) => {
     if (event.key === "Enter") {
       axios.get(url).then((response) => {
         setData(response.data);
-        console.log("Data weather: ", response.data);
       });
       setLocation("");
     }
@@ -33,7 +37,6 @@ function App() {
     top: "0",
     left: "0",
   };
-  console.log("my style: ", myStyle);
   return (
     <div style={myStyle} className="app">
       <div className="search">
@@ -66,19 +69,19 @@ function App() {
               <p className="bold">
                 {data.main ? data.main.feels_like.toFixed() + "°C" : null}
               </p>
-              <p>Feels like</p>
+              <p>Ngoài trời</p>
             </div>
             <div className="humidity">
               <p className="bold">
                 {data.main ? data.main.humidity + "%" : null}
               </p>
-              <p>Humidity</p>
+              <p>Độ ẩm</p>
             </div>
             <div className="wind">
               <p className="bold">
-                {data.wind ? data.wind.speed.toFixed() + "MPM" : null}
+                {data.wind ? Math.ceil(data.wind.speed) + " km/h" : null}
               </p>
-              <p>Wind speed</p>
+              <p>Tốc độ gió</p>
             </div>
           </div>
         )}
