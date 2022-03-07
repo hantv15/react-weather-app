@@ -24,19 +24,16 @@ function App() {
   // };
   const myStyle = {
     content: "",
-    background: `url(${
-      process.env.PUBLIC_URL +
-      `/assets/img/${
-        data.weather ? data.weather[0].icon + ".jpg" : "default.jpg"
-      }`
-    }) no-repeat center center/cover`,
+    background: `url("./assets/img/${
+      data.weather ? data.weather[0].icon : "default"
+    }.jpg") no-repeat center center/cover`,
     position: "absolute",
     width: "100%",
     height: "100%",
     top: "0",
     left: "0",
   };
-  console.log(myStyle);
+  console.log("my style: ", myStyle);
   return (
     <div style={myStyle} className="app">
       <div className="search">
