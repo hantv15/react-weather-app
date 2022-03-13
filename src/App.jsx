@@ -15,7 +15,7 @@ function App() {
       setData(data.data);
     };
     getData();
-  }, []);
+  }, [location]);
 
   // Tạo hàm xử lý khi nhập dữ liệu vào input sẽ call api lấy data
   const searchLocation = (event) => {
