@@ -61,7 +61,6 @@ function App() {
       }
     }
   }
-  getCoordintes();
 
   useEffect(() => {
     const getData = async () => {
@@ -71,6 +70,7 @@ function App() {
       setData(data.data);
     };
     getData();
+    getCoordintes();
   }, [location]);
 
   const myStyle = {
@@ -86,9 +86,7 @@ function App() {
   };
 
   const keyUpEventHandler = debounce(function (event) {
-    event.target.value
-      ? setLocation(event.target.value)
-      : setLocation(location);
+    event.target.value ? setLocation(event.target.value) : setLocation("");
   }, 300);
 
   function debounce(fn, wait) {
