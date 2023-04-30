@@ -19,7 +19,6 @@ function App() {
       var lat = crd.latitude.toString();
       var lng = crd.longitude.toString();
       var coordinates = [lat, lng];
-      console.log(`Latitude: ${lat}, Longitude: ${lng}`);
       getCity(coordinates);
       return;
     }
@@ -55,7 +54,6 @@ function App() {
       if (xhr.readyState == 4 && xhr.status == 200) {
         var response = JSON.parse(xhr.responseText);
         var address = response.address;
-        console.log(address);
         if (address.state) {
           setLocation(address.state);
         }
