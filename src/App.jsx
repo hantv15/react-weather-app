@@ -4,8 +4,64 @@ function App() {
   // Tạo state chưa dữ liệu khi gọi đến api
   const [data, setData] = useState([]);
   // Tạo state set dữ liệu khi search location
-  const [location, setLocation] = useState("Hà nội");
-  // const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=859b842dcdd2482527c201378c183952&lang=vi`;
+  const [location, setLocation] = useState("");
+
+  // Step 1: Get user coordinates
+  function getCoordintes() {
+    var options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+
+    function success(pos) {
+      var crd = pos.coords;
+      var lat = crd.latitude.toString();
+      var lng = crd.longitude.toString();
+      var coordinates = [lat, lng];
+      getCity(coordinates);
+      return;
+    }
+
+    function error(err) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+
+    navigator.geolocation.getCurrentPosition(success, error, options);
+  }
+
+  // Step 2: Get city name
+  function getCity(coordinates) {
+    var xhr = new XMLHttpRequest();
+    var lat = coordinates[0];
+    var lng = coordinates[1];
+
+    // Paste your LocationIQ token below.
+    xhr.open(
+      "GET",
+      "https://us1.locationiq.com/v1/reverse.php?key=pk.eb5020ba7b383c9feac618851cab1f43&lat=" +
+        lat +
+        "&lon=" +
+        lng +
+        "&format=json",
+      true
+    );
+    xhr.send();
+    xhr.onreadystatechange = processRequest;
+    xhr.addEventListener("readystatechange", processRequest, false);
+
+    function processRequest(e) {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        var response = JSON.parse(xhr.responseText);
+        var address = response.address;
+        if (address.state) {
+          setLocation(address.state);
+        }
+        return;
+      }
+    }
+  }
+  getCoordintes();
 
   useEffect(() => {
     const getData = async () => {
@@ -17,23 +73,6 @@ function App() {
     getData();
   }, [location]);
 
-  // Tạo hàm xử lý khi nhập dữ liệu vào input sẽ call api lấy data
-  const searchLocation = (event) => {
-    if (event.key === "Enter") {
-      axios
-        .get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=859b842dcdd2482527c201378c183952&lang=vi`
-        )
-        .then((response) => {
-          setData(response.data);
-        });
-      setLocation("");
-    }
-  };
-  // Hàm xử lý viết hoa chữ cái đầu
-  // const upperCaseFristLetter = (string) => {
-  //   return string.charAt(0).toUpperCase() + string.slice(1);
-  // };
   const myStyle = {
     content: "",
     background: `url("./assets/img/${
@@ -45,15 +84,35 @@ function App() {
     top: "0",
     left: "0",
   };
+
+  const keyUpEventHandler = debounce(function (event) {
+    event.target.value
+      ? setLocation(event.target.value)
+      : setLocation(location);
+  }, 300);
+
+  function debounce(fn, wait) {
+    var timeout;
+    return function () {
+      var context = this;
+      var args = arguments;
+
+      clearTimeout(timeout);
+
+      timeout = setTimeout(function () {
+        fn.apply(context, args);
+      }, wait);
+    };
+  }
+
   return (
     <div style={myStyle} className="app">
       <div className="search">
         <input
-          value={location}
-          onChange={(event) => setLocation(event.target.value)}
-          onKeyPress={searchLocation}
+          defaultValue={location}
+          onChange={(event) => keyUpEventHandler(event)}
           type="text"
-          placeholder="Nhập tên thành phố"
+          placeholder="Tên Thành phố/Quận huyện"
         />
       </div>
       <div className="container">
