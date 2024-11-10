@@ -1,13 +1,8 @@
 import React from 'react'
 
-const InputSearch = () => {
-    const handleGetValue = (e) => {
-        console.log(e);
-    }
+const InputSearch = ({ event, placeholder }) => {
     return (
-        <>
-            <input onChange={handleGetValue} type="text" />
-        </>
+        <input onChangeCapture={event} placeholder={placeholder} type="text" />
     )
 }
 
